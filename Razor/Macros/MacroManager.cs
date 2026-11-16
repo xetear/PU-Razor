@@ -122,6 +122,9 @@ namespace Assistant.Macros
 
         public static void PlayAt(Macro m, int at)
         {
+            if (!AutomationGuard.CanStartMacro())
+                return;
+
             ScriptManager.StopScript();
 
             if (m_Current != null)
@@ -173,6 +176,9 @@ namespace Assistant.Macros
 
         public static void Play(Macro m)
         {
+            if (!AutomationGuard.CanStartMacro())
+                return;
+
             ScriptManager.StopScript();
 
             if (m_Current != null)
@@ -436,6 +442,9 @@ namespace Assistant.Macros
 
             private void ExecuteNextAction()
             {
+                // PU: what the macro step sends is automation (AutomationGuard)
+                AutomationGuard.EnterAutomation();
+
                 try
                 {
                     if (m_Macro == null || World.Player == null)
@@ -456,6 +465,11 @@ namespace Assistant.Macros
                 {
                     this.Stop();
                     MacroManager.Stop();
+                }
+                finally
+                {
+                    AutomationGuard.ExitAutomation();
+                    AutomationGuard.ReportState();
                 }
             }
         }

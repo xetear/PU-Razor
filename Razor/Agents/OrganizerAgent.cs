@@ -197,6 +197,13 @@ namespace Assistant.Agents
 
         public void Organize()
         {
+            // PU: bit 30 / the context's agents part
+            if (!AutomationGuard.AgentAllowed(FeatureBit.OrganizerAgent))
+            {
+                World.Player?.SendMessage(MsgLevel.Warning, "The organizer agent is off on this server or in this context.");
+                return;
+            }
+
             if (m_Cont == 0 || m_Cont > 0x7FFFFF00)
             {
                 World.Player.SendMessage(MsgLevel.Force, LocString.ContNotSet);

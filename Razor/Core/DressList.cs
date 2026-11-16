@@ -280,9 +280,19 @@ namespace Assistant
             }
         }
 
+        /// <summary>PU: bit 31 / the context's agents part.</summary>
+        private static bool DressAllowed()
+        {
+            if (AutomationGuard.AgentAllowed(FeatureBit.DressLists))
+                return true;
+
+            World.Player.SendMessage(MsgLevel.Warning, "Dress lists are off on this server or in this context.");
+            return false;
+        }
+
         public void Undress()
         {
-            if (World.Player == null)
+            if (World.Player == null || !DressAllowed())
                 return;
 
             int count = 0;
@@ -343,7 +353,7 @@ namespace Assistant
 
         public void Dress()
         {
-            if (World.Player == null)
+            if (World.Player == null || !DressAllowed())
                 return;
 
             int skipped = 0, gone = 0, done = 0;

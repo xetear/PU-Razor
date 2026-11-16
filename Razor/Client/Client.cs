@@ -56,7 +56,14 @@ namespace Assistant
         public static readonly int HumanoidHealthChecks = 25;
         public static readonly int SpeechJournalChecks = 26;
 
-        public static readonly int MaxBit = 26;
+        // PU shard bits (the server's AssistantFeatures has the same numbers)
+        public static readonly int Scripts = 27; // no script may start; a running one stops when the bit arrives
+        public static readonly int Macros = 28; // the same for macros
+        public static readonly int ScavengerAgent = 29;
+        public static readonly int OrganizerAgent = 30;
+        public static readonly int DressLists = 31;
+
+        public static readonly int MaxBit = 31;
     }
 
     public abstract class Client
@@ -90,6 +97,7 @@ namespace Assistant
         public void SetFeatures(ulong features)
         {
             m_Features = features;
+            AutomationGuard.OnFeaturesChanged();
         }
 
         public abstract DateTime ConnectionStart { get; }

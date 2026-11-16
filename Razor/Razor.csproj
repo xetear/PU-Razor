@@ -203,6 +203,7 @@
     </Compile>
     <Compile Include="Client\ClassicUO.cs" />
     <Compile Include="Client\OSI.cs" />
+    <Compile Include="Core\AutomationGuard.cs" />
     <Compile Include="Core\ActionQueue.cs">
       <SubType>Code</SubType>
     </Compile>

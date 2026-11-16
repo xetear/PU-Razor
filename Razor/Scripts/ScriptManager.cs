@@ -112,24 +112,40 @@ namespace Assistant.Scripts
 
                     bool running;
 
-                    if (_queuedScript != null)
+                    // PU: what the script sends from here on is automation (AutomationGuard)
+                    AutomationGuard.EnterAutomation();
+
+                    try
                     {
-                        // Starting a new script. This relies on the atomicity for references in CLR
-                        Script script = _queuedScript;
-
-                        running = Interpreter.StartScript(script);
-                        UpdateLineNumber(Interpreter.CurrentLine);
-
-                        _queuedScript = null;
-                    }
-                    else
-                    {
-                        running = Interpreter.ExecuteScript();
-
-                        if (running)
+                        if (_queuedScript != null)
                         {
-                            UpdateLineNumber(Interpreter.CurrentLine);
+                            // Starting a new script. This relies on the atomicity for references in CLR
+                            Script script = _queuedScript;
+                            _queuedScript = null;
+
+                            if (AutomationGuard.CanStartScript())
+                            {
+                                running = Interpreter.StartScript(script);
+                                UpdateLineNumber(Interpreter.CurrentLine);
+                            }
+                            else
+                            {
+                                running = false;
+                            }
                         }
+                        else
+                        {
+                            running = Interpreter.ExecuteScript();
+
+                            if (running)
+                            {
+                                UpdateLineNumber(Interpreter.CurrentLine);
+                            }
+                        }
+                    }
+                    finally
+                    {
+                        AutomationGuard.ExitAutomation();
                     }
 
 
@@ -178,6 +194,8 @@ namespace Assistant.Scripts
                             ClearHighlightLine(HighlightType.Execution);
                         }
                     }
+
+                    AutomationGuard.ReportState();
                 }
                 catch (Exception ex)
                 {
@@ -396,11 +414,14 @@ namespace Assistant.Scripts
             if (World.Player == null || lines == null)
                 return;
 
+            if (!AutomationGuard.CanStartScript())
+                return;
+
             if (MacroManager.Playing || MacroManager.StepThrough)
                 MacroManager.Stop();
 
             StopScript();
-            
+
             EnableHighlight = false;
             
             SetVariableActive = false;

@@ -1440,6 +1440,18 @@ namespace Assistant
         }
     }
 
+    /// <summary>PU: 0xF0/0xFC, whether a script runs (bit0) and a macro plays (bit1).</summary>
+    public sealed class RazorAutomationState : Packet
+    {
+        public RazorAutomationState(byte state) : base(0xF0)
+        {
+            EnsureCapacity(1 + 2 + 1 + 1);
+
+            Write((byte) 0xFC);
+            Write(state);
+        }
+    }
+
     public sealed class DesignStateGeneral : Packet
     {
         public DesignStateGeneral(Item house) : base(0xBF)
