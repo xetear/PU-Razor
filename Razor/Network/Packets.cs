@@ -1421,11 +1421,34 @@ namespace Assistant
 
     public sealed class RazorNegotiateResponse : Packet
     {
+        /// <summary>What this Razor says it is in its 0xFF reply; the PU shard checks it.</summary>
+        public const string BuildName = "PU-Razor";
+
+        public static string Identity => $"{BuildName}/{Engine.Version}";
+
         public RazorNegotiateResponse() : base(0xF0)
         {
-            EnsureCapacity(1 + 2 + 1);
+            // PU: the reply carries our name and version after the subcommand: u8 length + ASCII.
+            // Stock servers read only the subcommand, so the extra bytes are harmless there.
+            string id = Identity;
+
+            EnsureCapacity(1 + 2 + 1 + 1 + id.Length);
 
             Write((byte) 0xFF);
+            Write((byte) id.Length);
+            WriteAsciiFixed(id, id.Length);
+        }
+    }
+
+    /// <summary>PU: 0xF0/0xFC, whether a script runs (bit0) and a macro plays (bit1).</summary>
+    public sealed class RazorAutomationState : Packet
+    {
+        public RazorAutomationState(byte state) : base(0xF0)
+        {
+            EnsureCapacity(1 + 2 + 1 + 1);
+
+            Write((byte) 0xFC);
+            Write(state);
         }
     }
 

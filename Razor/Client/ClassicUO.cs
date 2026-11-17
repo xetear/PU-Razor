@@ -423,6 +423,7 @@ namespace Assistant
         private void OnConnected()
         {
             m_ConnectionStart = DateTime.UtcNow;
+            AutomationGuard.Reset();
         }
 
         private void OnClientClosing()
@@ -525,6 +526,10 @@ namespace Assistant
         {
             byte[] data = p.Compile();
             int length = (int) p.Length;
+
+            if (!AutomationGuard.AllowSend(data, length))
+                return;
+
             _sendToServer(ref data, ref length);
         }
 
@@ -566,6 +571,9 @@ namespace Assistant
         {
             byte[] data = p.Compile();
             int length = (int) p.Length;
+
+            if (!AutomationGuard.AllowSend(data, length))
+                return;
 
             _sendToServer(ref data, ref length);
 
@@ -609,6 +617,9 @@ namespace Assistant
 
         internal override void RequestMove(Direction m_Dir)
         {
+            if (!AutomationGuard.AllowMove())
+                return;
+
             _requestMove((int) m_Dir, false);
         }
 

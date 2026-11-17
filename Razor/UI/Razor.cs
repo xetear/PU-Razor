@@ -870,7 +870,7 @@ namespace Assistant
                     text.Append(Language.GetString(LocString.NegotiateTitle));
                     text.Append("\r\n");
 
-                    for (int i = 0; i < FeatureBit.MaxBit; i++)
+                    for (int i = 0; i <= FeatureBit.MaxBit; i++)
                     {
                         if (!Client.Instance.AllowBit(i))
                         {
@@ -4441,6 +4441,16 @@ namespace Assistant
                 LockControl(this.healthFmt);
                 LockControl(this.chkPartyOverhead);
             }
+
+            // PU bits 27, 28, 31 (a context's off parts aren't locked: they come and go every few seconds)
+            if (!Client.Instance.AllowBit(FeatureBit.Scripts))
+                LockControl(this.playScript);
+
+            if (!Client.Instance.AllowBit(FeatureBit.Macros))
+                LockControl(this.playMacro);
+
+            if (!Client.Instance.AllowBit(FeatureBit.DressLists))
+                LockControl(this.dressNow);
         }
 
         public Assistant.MapUO.MapWindow MapWindow;

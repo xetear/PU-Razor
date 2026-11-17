@@ -2310,6 +2310,20 @@ namespace Assistant
 
                     break;
                 }
+
+                case 0xFD: // PU: context state (PvP flagged, mining ...): the parts of automation now off
+                {
+                    if (p.Length < 9)
+                        break;
+
+                    uint blocked = p.ReadUInt32();
+                    int nameLength = p.ReadByte();
+                    string name = nameLength > 0 ? p.ReadStringSafe(nameLength) : string.Empty;
+
+                    AutomationGuard.SetContext((AutomationGuard.Part) blocked, name);
+
+                    break;
+                }
             }
         }
 

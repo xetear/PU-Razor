@@ -170,10 +170,20 @@ namespace Assistant
             {
                 _lastTriggerTime = DateTime.UtcNow;
 
-                if (_callback != null)
-                    _callback();
-                else if (_callbackState != null)
-                    _callbackState(ref _state);
+                // PU: what a hotkey sends is the player's own action, even while a script or macro runs
+                AutomationGuard.EnterHotkey();
+
+                try
+                {
+                    if (_callback != null)
+                        _callback();
+                    else if (_callbackState != null)
+                        _callbackState(ref _state);
+                }
+                finally
+                {
+                    AutomationGuard.ExitHotkey();
+                }
             }
         }
 

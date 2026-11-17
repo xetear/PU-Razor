@@ -318,7 +318,8 @@ namespace Assistant.Agents
         {
             DebugLog("Checking WorldItem {0} ...", item);
             if (!m_Enabled || !m_Items.Contains(item.ItemID) || World.Player.Backpack == null || World.Player.IsGhost ||
-                World.Player.Weight >= World.Player.MaxWeight)
+                World.Player.Weight >= World.Player.MaxWeight ||
+                !AutomationGuard.AgentAllowed(FeatureBit.ScavengerAgent)) // PU: bit 29 / the context's agents part
             {
                 DebugLog("... skipped.");
                 return;
