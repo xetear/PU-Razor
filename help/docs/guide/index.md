@@ -1,0 +1,135 @@
+---
+description: A comprehensive guide to the UO Razor scripting engine, including descriptions & examples for all commands, expressions, keywords
+---
+
+# Introduction
+
+The **UO Razor Scripting Engine** is a _"command based scripting language"_ designed to make it easier to read, create, edit and share UO Razor scripts.
+
+To learn more about this version of Razor, please visit the [home page](https://www.razorce.com).
+
+# Quick Start
+
+Check out the various [Commands](commands.md), [Expressions](expressions.md), and [Keywords](keywords.md) that are available along with working examples.
+
+# Design
+
+This scripting engine attempts to maintain and improve existing Razor functionality, offer quality of life improvements over the existing macro system, and provide an easily approachable syntax that is accessible regardless of skill level.
+
+For example, instead of having to do the following with a Razor macro:
+
+1. Record macro
+2. Double click dagger
+3. Stop recording
+4. Right-click on dagger
+5. Select Double Click use by type
+
+You can simply type:
+
+```razor
+dclicktype 'dagger'
+```
+
+# Razor Scripts vs. Razor Macros
+
+While updates to Razor have made it easier to edit and share macros, one of the core issues is that they weren't designed to be read and edited by users directly, instead the serialized format they're saved in expects you to use the macro editor in Razor.
+
+For example, even a basic macro that casts blade spirit, waits for the target and casts a relative location based on your position can be difficult to read to the untrained eye.
+
+```razor
+Assistant.Macros.MacroCastSpellAction|33
+Assistant.Macros.WaitForTargetAction|30
+Assistant.Macros.TargetRelLocAction|3|1
+```
+
+With a Razor script, it becomes:
+
+```razor
+cast 'blade spirits'
+waitfortarget
+targetrelloc 3 1
+```
+
+Another example using a script that uses detect hidden, waits for target, targets self, waits .40 seconds, checks for a system message, says something and targets the closest mobile.
+
+```razor
+Assistant.Macros.UseSkillAction|14
+Assistant.Macros.WaitForTargetAction|30
+Assistant.Macros.HotKeyAction|1059|
+Assistant.Macros.PauseAction|00:00:00.4000000
+Assistant.Macros.IfAction|4|0|you can see nothing
+Assistant.Macros.ElseAction
+Assistant.Macros.SpeechAction|0|38|3|ENU|2|16|52|I Ban Thee
+Assistant.Macros.WaitForTargetAction|30
+Assistant.Macros.HotKeyAction|2003|
+Assistant.Macros.EndIfAction
+```
+
+With a UO Razor script, it becomes:
+
+```razor
+skill 'detecthidden'
+waitfortarget
+target 'self'
+
+wait 400
+
+if insysmsg 'you see nothing'
+    overhead 'All clear'
+else
+    say 'I ban thee'
+    waitfortarget
+    target closest grey humanoid
+endif
+```
+
+As you can see, while maintaining the same functionality of macros, a Razor script is much easier to read, edit and share.
+
+!!! tip "Convert Macros to Scripts"
+    **Right-Click** on any macro to convert it to a script.
+
+# Script Editor
+
+UO Razor scripts can be written using any text editor. The script editor built into Razor offers syntax highlighting and auto-completion.
+
+!!! tip "Window Size"
+    You can resize the Razor window to make the script editor larger. You can also adjust the size of the script list to give you additional room.
+
+Here are a list of some of keyboard shortcuts available in the editor:
+
+## General/Misc
+
+Common text editor shortcuts (such as `Ctrl-C` and `Ctrl-V` for copy/paste are not listed):
+
+- ++ctrl+g++: Goto to a specific line dialog
+
+- ++ctrl+f++: Find/Search dialog
+- ++f3++: Find next
+- ++ctrl+h++: Search & replace dialog
+- ++ctrl+shift+c++: Comment / Uncomment selected code
+- ++alt+"Mouse Drag"++: Select multiple lines of text
+- ++ctrl+home++: Go to the first line
+- ++ctrl+end++: Go to the last line
+- ++alt+up++: Move selected lines up
+- ++alt+down++: Move selected lines down
+
+## Bookmarks
+
+- ++ctrl+b++: Bookmark line
+- ++ctrl+shift+b++: Remove bookmark
+- ++ctrl+b++: Move cursor to next bookmark
+- ++ctrl+shift+n++: Move cursor to previous bookmark
+
+## Auto-Complete
+
+- ++ctrl+space++: Open auto-complete menu
+
+## Zoom
+
+- ++ctrl+"Mouse Wheel Up"++: Zoom in
+- ++ctrl+"Mouse Wheel Down"++: Zoom out
+- ++ctrl+0++: Reset zoom
+
+# About
+
+The **Razor Scripting Engine** was designed and implemented by [Quick](https://github.com/markdwags) and is released under GPLv3.
